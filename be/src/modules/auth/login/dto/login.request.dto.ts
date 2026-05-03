@@ -1,6 +1,6 @@
 import { IsEmail, IsString, MinLength } from 'class-validator';
 
-export class LoginDto {
+export class LoginRequestDto {
   @IsEmail({}, { message: 'Email không hợp lệ' })
   email: string;
 

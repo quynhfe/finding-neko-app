@@ -1,6 +1,6 @@
 import { IsEmail, IsString, MinLength, MaxLength } from 'class-validator';
 
-export class RegisterDto {
+export class RegisterRequestDto {
   @IsEmail({}, { message: 'Email không hợp lệ' })
   email: string;
 

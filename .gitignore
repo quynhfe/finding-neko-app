@@ -26,4 +26,7 @@ pnpm-debug.log*
   
 # Claude / kit                                                                                                                                                                                                     
 .claude/           
-claude-kit/       
+claude-kit/
+CLAUDE.md
+prompt.md
+CLAUDE_RULE.md
