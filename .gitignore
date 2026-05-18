@@ -24,19 +24,9 @@ pnpm-debug.log*
 !.env.example
 !.env.*.example                                                                                                                                                                                                    
   
-# Claude / kit    
-.agent                                                                                                                                                                                                 
+# Claude / kit                                                                                                                                                                                                     
 .claude/           
 claude-kit/
 CLAUDE.md
 prompt.md
 CLAUDE_RULE.md
-
-fe-expo/.env
-fe/.env
-be/.env
-fe
-fe-demo
-
-/_bmad/
-/_bmad-output/
