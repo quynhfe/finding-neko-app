@@ -5,7 +5,9 @@ import { GetMeResponseDto } from './dto/get-me.response.dto';
 export class GetMeUseCase {
   async execute(user: {
     id: string;
+    username: string;
     email: string;
+    fullName: string;
     role: string;
   }): Promise<GetMeResponseDto> {
     return this.convertToResponse(user);
@@ -13,7 +15,9 @@ export class GetMeUseCase {
 
   private convertToResponse(user: {
     id: string;
+    username: string;
     email: string;
+    fullName: string;
     role: string;
   }): GetMeResponseDto {
     return {

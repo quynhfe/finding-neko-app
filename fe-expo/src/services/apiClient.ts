@@ -3,7 +3,8 @@ import * as SecureStore from 'expo-secure-store';
 
 const ACCESS_TOKEN_KEY = 'finding-neko-access-token';
 
-export const API_BASE_URL = 'http://192.168.2.15:5000/api';
+export const API_BASE_URL =
+  process.env.EXPO_PUBLIC_API_BASE_URL || 'http://localhost:5001/api';
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,

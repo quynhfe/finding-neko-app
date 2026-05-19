@@ -9,6 +9,7 @@ import type { AuthStackParamList, MainTabParamList, RootStackParamList } from '.
 import { colors, radius, shadow } from '@/design/tokens';
 import { LoginScreen } from '@/features/auth/LoginScreen';
 import { RegisterScreen } from '@/features/auth/RegisterScreen';
+import { VerifyOtpScreen } from '@/features/auth/VerifyOtpScreen';
 import { OnboardingScreen } from '@/features/onboarding/OnboardingScreen';
 import { CatSetupScreen } from '@/features/cats/CatSetupScreen';
 import { HomeScreen } from '@/features/home/HomeScreen';
@@ -143,6 +144,7 @@ function AuthNavigator() {
     <AuthStack.Navigator screenOptions={{ headerShown: false }}>
       <AuthStack.Screen name="Login" component={LoginScreen} />
       <AuthStack.Screen name="Register" component={RegisterScreen} />
+      <AuthStack.Screen name="VerifyOtp" component={VerifyOtpScreen} />
     </AuthStack.Navigator>
   );
 }
@@ -185,9 +187,9 @@ function MainTabs() {
 }
 
 function RootNavigator() {
-  const { user, loading } = useAuth();
+  const { user, initializing } = useAuth();
 
-  if (loading) {
+  if (initializing) {
     return <LoadingScreen />;
   }
 
@@ -197,8 +199,8 @@ function RootNavigator() {
         <Root.Screen name="Auth" component={AuthNavigator} />
       ) : (
         <>
-          <Root.Screen name="Onboarding" component={OnboardingScreen} />
           <Root.Screen name="Main" component={MainTabs} />
+          <Root.Screen name="Onboarding" component={OnboardingScreen} />
           <Root.Screen name="CatSetup" component={CatSetupScreen} />
           <Root.Screen name="ChallengeFlow" component={ChallengeFlowScreen} />
           <Root.Screen name="DiaryDetail" component={DiaryScreen} />

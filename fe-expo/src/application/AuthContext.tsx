@@ -4,10 +4,12 @@ import * as authApi from '@/services/authApi';
 
 type AuthState = {
   user: User | null;
+  initializing: boolean;
   loading: boolean;
   error: string | null;
-  signIn(input: {email: string; password: string}): Promise<void>;
-  signUp(input: {fullName: string; email: string; password: string}): Promise<void>;
+  signIn(input: {identifier: string; password: string}): Promise<void>;
+  signUp(input: {username: string; email: string; password: string}): Promise<string>;
+  verifyRegistrationOtp(input: {username: string; email: string; password: string; otp: string}): Promise<string>;
   signOut(): Promise<void>;
 };
 
@@ -22,9 +24,14 @@ function readableError(error: unknown) {
   return 'Không thể kết nối máy chủ.';
 }
 
+function throwReadableError(error: unknown): never {
+  throw new Error(readableError(error));
+}
+
 export function AuthProvider({children}: PropsWithChildren) {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [initializing, setInitializing] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -33,33 +40,51 @@ export function AuthProvider({children}: PropsWithChildren) {
       .getMe()
       .then(nextUser => mounted && setUser(nextUser))
       .catch(() => mounted && setUser(null))
-      .finally(() => mounted && setLoading(false));
+      .finally(() => mounted && setInitializing(false));
     return () => {
       mounted = false;
     };
   }, []);
 
-  const signIn = useCallback(async (input: {email: string; password: string}) => {
+  const signIn = useCallback(async (input: {identifier: string; password: string}) => {
     setError(null);
     setLoading(true);
     try {
       setUser(await authApi.login(input));
     } catch (err) {
-      setError(readableError(err));
-      throw err;
+      const message = readableError(err);
+      setError(message);
+      throwReadableError(err);
     } finally {
       setLoading(false);
     }
   }, []);
 
-  const signUp = useCallback(async (input: {fullName: string; email: string; password: string}) => {
+  const signUp = useCallback(async (input: {username: string; email: string; password: string}) => {
     setError(null);
     setLoading(true);
     try {
-      setUser(await authApi.register(input));
+      const result = await authApi.register(input);
+      return result.email;
     } catch (err) {
-      setError(readableError(err));
-      throw err;
+      const message = readableError(err);
+      setError(message);
+      throwReadableError(err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const verifyRegistrationOtp = useCallback(async (input: {username: string; email: string; password: string; otp: string}) => {
+    setError(null);
+    setLoading(true);
+    try {
+      const result = await authApi.verifyRegisterOtp(input);
+      return result.message;
+    } catch (err) {
+      const message = readableError(err);
+      setError(message);
+      throwReadableError(err);
     } finally {
       setLoading(false);
     }
@@ -71,8 +96,17 @@ export function AuthProvider({children}: PropsWithChildren) {
   }, []);
 
   const value = useMemo(
-    () => ({user, loading, error, signIn, signUp, signOut}),
-    [error, loading, signIn, signOut, signUp, user],
+    () => ({
+      user,
+      initializing,
+      loading,
+      error,
+      signIn,
+      signUp,
+      verifyRegistrationOtp,
+      signOut,
+    }),
+    [error, initializing, loading, signIn, signOut, signUp, user, verifyRegistrationOtp],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -9,6 +9,7 @@ import { User, UserDocument } from '../../../models/user.schema';
 export interface JwtPayload {
   sub: string;
   email: string;
+  username: string;
   role: string;
 }
 
@@ -30,10 +31,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     if (!user || !user.isActive) {
       throw new UnauthorizedException('Token không hợp lệ hoặc user đã bị khóa');
     }
+    const username = user.username || user.email.split('@')[0];
     return {
       id: payload.sub,
-      email: payload.email,
-      role: payload.role,
+      username,
+      email: user.email,
+      fullName: user.fullName || username,
+      role: user.role,
     };
   }
 }

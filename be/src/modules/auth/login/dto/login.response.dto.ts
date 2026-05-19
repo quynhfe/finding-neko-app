@@ -1,8 +1,9 @@
 export class LoginResponseDto {
-  success: boolean;
-  accessToken: string;
-  user: {
+  success!: boolean;
+  accessToken!: string;
+  user!: {
     id: string;
+    username: string;
     email: string;
     fullName: string;
     role: string;

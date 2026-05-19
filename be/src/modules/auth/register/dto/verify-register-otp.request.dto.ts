@@ -1,12 +1,13 @@
 import {
   IsEmail,
   IsString,
+  Length,
   Matches,
   MaxLength,
   MinLength,
 } from 'class-validator';
 
-export class RegisterRequestDto {
+export class VerifyRegisterOtpRequestDto {
   @IsString()
   @MinLength(3, { message: 'Username phải có ít nhất 3 ký tự' })
   @MaxLength(30)
@@ -23,4 +24,8 @@ export class RegisterRequestDto {
   @MinLength(6, { message: 'Password phải có ít nhất 6 ký tự' })
   @MaxLength(64)
   password!: string;
+
+  @IsString()
+  @Length(6, 6, { message: 'OTP phải gồm 6 chữ số' })
+  otp!: string;
 }

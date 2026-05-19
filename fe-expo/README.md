@@ -12,10 +12,18 @@ Scan the QR code from the Expo Go app on iPhone.
 
 ## Backend URL
 
-The default API URL is set to this computer's current LAN IP in `src/services/apiClient.ts`:
+The app reads the backend URL from `fe-expo/.env`:
 
-```ts
-export const API_BASE_URL = 'http://192.168.2.15:5000/api';
+```env
+EXPO_PUBLIC_API_BASE_URL=http://localhost:5001/api
 ```
 
-Expo Go cannot reach your computer's `localhost` from a real phone. If your Wi-Fi IP changes, update the URL.
+After changing `.env`, restart Expo with cache clear:
+
+```bash
+npm run start
+```
+
+`npm run start` already runs `expo start -c`.
+
+Expo Go on a real phone cannot reach your computer's `localhost`. Use your computer's LAN IP in `.env` for phone testing, for example `http://192.168.2.8:5001/api`.

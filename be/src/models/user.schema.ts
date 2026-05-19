@@ -22,13 +22,16 @@ export enum UserRole {
   },
 })
 export class User {
+  @Prop({ required: true, lowercase: true, trim: true })
+  username: string;
+
   @Prop({ required: true, unique: true, lowercase: true, trim: true })
   email: string;
 
   @Prop({ required: true })
   password: string;
 
-  @Prop({ required: true, trim: true })
+  @Prop({ trim: true })
   fullName: string;
 
   @Prop({ enum: UserRole, default: UserRole.USER })
@@ -42,4 +45,8 @@ export class User {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+UserSchema.index(
+  { username: 1 },
+  { unique: true, partialFilterExpression: { username: { $type: 'string' } } },
+);
 UserSchema.index({ email: 1 }, { unique: true });

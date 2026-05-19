@@ -11,7 +11,8 @@ export class GetMeController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async getMe(
-    @CurrentUser() user: { id: string; email: string; role: string },
+    @CurrentUser()
+    user: { id: string; username: string; email: string; fullName: string; role: string },
   ): Promise<GetMeResponseDto> {
     return this.getMeUseCase.execute(user);
   }

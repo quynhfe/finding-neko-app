@@ -15,19 +15,23 @@ export class LoginUseCase {
   ) {}
 
   async execute(dto: LoginRequestDto): Promise<LoginResponseDto> {
-    const user = await this.readUser(dto.email);
+    const user = await this.readUser(dto.identifier);
     this.validateUserActive(user);
     await this.validatePassword(dto.password, user.password);
     const accessToken = this.generateToken(user);
     return this.convertToResponse(user, accessToken);
   }
 
-  private async readUser(email: string): Promise<UserDocument> {
+  private async readUser(identifier: string): Promise<UserDocument> {
+    const normalizedIdentifier = identifier.trim().toLowerCase();
+    const isEmail = normalizedIdentifier.includes('@');
     const user = await this.userModel.findOne({
-      email: email.toLowerCase(),
+      [isEmail ? 'email' : 'username']: normalizedIdentifier,
     });
     if (!user) {
-      throw new UnauthorizedException('Email hoặc mật khẩu không đúng');
+      throw new UnauthorizedException(
+        'Email/username hoặc mật khẩu không đúng',
+      );
     }
     return user;
   }
@@ -44,7 +48,9 @@ export class LoginUseCase {
   ): Promise<void> {
     const valid = await bcrypt.compare(plainPassword, hashedPassword);
     if (!valid) {
-      throw new UnauthorizedException('Email hoặc mật khẩu không đúng');
+      throw new UnauthorizedException(
+        'Email/username hoặc mật khẩu không đúng',
+      );
     }
   }
 
@@ -52,6 +58,7 @@ export class LoginUseCase {
     const payload = {
       sub: user._id.toString(),
       email: user.email,
+      username: this.resolveUsername(user),
       role: user.role,
     };
     return this.jwtService.sign(payload);
@@ -66,13 +73,18 @@ export class LoginUseCase {
       accessToken,
       user: {
         id: user._id.toString(),
+        username: this.resolveUsername(user),
         email: user.email,
-        fullName: user.fullName,
+        fullName: user.fullName || this.resolveUsername(user),
         role: user.role,
         isActive: user.isActive,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
       },
     };
+  }
+
+  private resolveUsername(user: UserDocument): string {
+    return user.username || user.email.split('@')[0];
   }
 }

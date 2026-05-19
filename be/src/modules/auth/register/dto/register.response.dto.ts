@@ -1,13 +1,10 @@
-export class RegisterResponseDto {
-  success: boolean;
-  accessToken: string;
-  user: {
-    id: string;
-    email: string;
-    fullName: string;
-    role: string;
-    isActive: boolean;
-    createdAt: Date;
-    updatedAt: Date;
-  };
+export class RegisterStartResponseDto {
+  success!: boolean;
+  email!: string;
+  message!: string;
+}
+
+export class VerifyRegisterOtpResponseDto {
+  success!: boolean;
+  message!: string;
 }

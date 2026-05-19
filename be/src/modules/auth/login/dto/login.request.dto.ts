@@ -1,10 +1,12 @@
-import { IsEmail, IsString, MinLength } from 'class-validator';
+import { IsString, MaxLength, MinLength } from 'class-validator';
 
 export class LoginRequestDto {
-  @IsEmail({}, { message: 'Email không hợp lệ' })
-  email: string;
+  @IsString()
+  @MinLength(3, { message: 'Email hoặc username không hợp lệ' })
+  @MaxLength(254)
+  identifier!: string;
 
   @IsString()
   @MinLength(6, { message: 'Password phải có ít nhất 6 ký tự' })
-  password: string;
+  password!: string;
 }
