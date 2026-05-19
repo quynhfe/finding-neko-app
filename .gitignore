@@ -18,22 +18,27 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# Env (an toàn ở mọi cấp)
+# Environment
 .env
 .env.*
 !.env.example
-!.env.*.example                                                                                                                                                                                                    
-  
-# Claude / kit                                                                                                                                                                                                     
-.claude/           
+!.env.*.example
+
+# Claude / AI tools
+.agent
+.claude/
 claude-kit/
 CLAUDE.md
-prompt.md
 CLAUDE_RULE.md
+prompt.md
 
-.agent
+# BMAD
 /_bmad/
 /_bmad-output/
-node_modules
-fe
-fe-demo 
+
+# Dependencies
+node_modules/
+
+# Local folders
+fe/
+fe-demo/
